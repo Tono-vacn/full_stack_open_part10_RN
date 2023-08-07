@@ -1,9 +1,94 @@
-import { FlatList, View, StyleSheet,Text, Image } from 'react-native';
+import { FlatList, View, StyleSheet, Image } from 'react-native';
+import {buttonStyle} from '../theme';
+import Text from './Text';
 
-const styles = StyleSheet.create({
+const stylesAvatar = StyleSheet.create({
+  tinyLogo: {
+    width: 50,
+    height: 50,
+    borderRadius: 4,
+    marginRight: 16
+  }
+});
+
+const Avatar = ({ ownerAvatarUrl }:any) => {
+  return <Image style={stylesAvatar.tinyLogo} source={{ uri: `${ownerAvatarUrl}` }} />;
+};
+
+const stylesFoot = StyleSheet.create({
+  flexContainer: {
+    display: "flex",
+    alignItems: "center"
+  }
+});
+
+const kFormatter = (num:number) => {
+  return Math.abs(num) > 999
+    ? Math.sign(num) * Number((Math.abs(num) / 1000).toFixed(1)) + "k"
+    : Math.sign(num) * Math.abs(num);
+};
+
+const Foot = ({ label, value }:any) => {
+  return (
+    <View style={stylesFoot.flexContainer}>
+      <Text fontWeight="bold" fontSize="subheading">
+        {kFormatter(value)}
+      </Text>
+      <Text color="textSecondary" fontSize="subheading">
+        {label}
+      </Text>
+    </View>
+  );
+};
+
+
+
+const LanguageTag = ({ tag }:any) => {
+  return <Text style={buttonStyle.primary}>{tag}</Text>;
+};
+
+const stylesList = StyleSheet.create({
   separator: {
     height: 10,
   },
+  flexContainer: {
+    display: 'flex',
+    //flexDirection: 'row',
+    flexWrap: 'wrap',
+    backgroundColor: '#e1e4e8',
+    padding: 10,
+  },
+  flexItem: {
+    flexGrow: 0,
+    flexShrink: 1,
+    flexBasis: 'auto',
+    backgroundColor: 'white',
+    padding: 10,
+  },
+  flexContainerFootbar: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    padding: 10,
+  },
+  flexItemFootbar: {
+    flexGrow: 0,
+    flexShrink: 1,
+    flexBasis: 'auto',
+    padding: 20,
+  },
+  flexContainerMiddlePart: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    padding: 10,
+  },  
+  flexItemMiddlePart: {
+    flexGrow: 0,
+    flexShrink: 1,
+    flexBasis: 'auto',
+    padding: 5,
+  }
 });
 
 const repositories = [
@@ -53,7 +138,38 @@ const repositories = [
   },
 ];
 
-const ItemSeparator = () => <View style={styles.separator} />;
+const ItemSeparator = () => <View style={stylesList.separator} />;
+
+
+
+const styles = StyleSheet.create({
+  container: {
+    display: "flex",
+    padding: 12,
+    backgroundColor: "white"
+  },
+  flexContainerColSS: {
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    width: "80%"
+  },
+  flexContainerRowAS: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    marginTop:6
+  },
+  flexContainerRowSS: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "flex-start"
+  },
+  box: {
+    width: 80,
+    height: 80
+  }
+});
 
 const RepositoryItem = ({ item }:any) => {
   // the item object is passed to this component by the FlatList component
@@ -72,24 +188,35 @@ const RepositoryItem = ({ item }:any) => {
   } = item;
 
   return (
-    <View>
-      <Text>Full name: {fullName}</Text>
-      <Text>Description: {description}</Text>
-      <Text>Language: {language}</Text>
-      <Text>Stars: {stargazersCount}</Text>
-      <Text>Forks: {forksCount}</Text>
-      <Text>Reviews: {reviewCount}</Text>
-      <Text>Rating: {ratingAverage}</Text>
-      <Image
-        style={{ width: 50, height: 50 }}
-        source={{ uri: ownerAvatarUrl }}
-      />
+    <View style={styles.container}>
+      <View style={styles.flexContainerRowSS}>
+        <View>
+          <Avatar ownerAvatarUrl={ownerAvatarUrl} />
+        </View>
+        <View style={styles.flexContainerColSS}>
+          <Text fontWeight="bold" style={{ marginBottom: 4 }}>
+            {fullName}
+          </Text>
+          <Text color="textSecondary" style={{ marginBottom: 4 }}>
+            {description}
+          </Text>
+          <LanguageTag tag={language} />
+        </View>
+      </View>
+      <View style={styles.flexContainerRowAS}>
+        <Foot label={"Starts"} value={stargazersCount} />
+        <Foot label={"Forks"} value={forksCount} />
+        <Foot label={"Reviews"} value={reviewCount} />
+        <Foot label={"Rating"} value={ratingAverage} />
+      </View>
     </View>
+
   );
 }
 
 const RepositoryList = () => {
   return (
+    <View style={stylesList.flexContainer}>
     <FlatList
       data={repositories}
       ItemSeparatorComponent={ItemSeparator}
@@ -102,6 +229,7 @@ const RepositoryList = () => {
       }
       // other props
     />
+    </View>
   );
 };
 
