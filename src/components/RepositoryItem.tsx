@@ -42,8 +42,6 @@ const Foot = ({ label, value }:any) => {
 };
 
 
-
-
 const LanguageTag = ({ tag }:any) => {
   return <Text style={buttonStyle.primary}>{tag}</Text>;
 };
